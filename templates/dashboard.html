@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Whop Gamify{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container py-4">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="welcome-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="display-6 fw-bold text-white mb-2">
+                                Welcome back, {{ user.username }}!
+                            </h1>
+                            <p class="text-white-50 mb-0">
+                                Ready to level up today? Let's see what you can achieve!
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="level-badge-large">
+                                <span class="level-number">{{ user.level }}</span>
+                                <span class="level-label">LEVEL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ user.xp }}</div>
+                        <div class="stat-label">Total XP</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ user.points }}</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ user.streak_count }}</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ recent_achievements|length }}</div>
+                        <div class="stat-label">Achievements</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Progress -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="level-progress-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3 class="text-white mb-3">Level Progress</h3>
+                            <div class="xp-bar-container">
+                                <div class="xp-bar">
+                                    <div class="xp-progress" style="width: {{ progress_percent }}%"></div>
+                                </div>
+                                <div class="xp-text">
+                                    <span class="current-xp">{{ progress }}</span> / <span class="needed-xp">{{ needed }}</span> XP
+                                    <span class="xp-percent">({{ "%.1f"|format(progress_percent) }}%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="next-level-info">
+                                <div class="next-level-number">{{ user.level + 1 }}</div>
+                                <div class="next-level-label">Next Level</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="action-buttons-card">
+                    <h3 class="text-white mb-3">Quick Actions</h3>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <button class="action-btn" onclick="earnXP('action', 5)">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Earn XP (+5)</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="action-btn" onclick="earnXP('action', 10)">
+                                <i class="fas fa-star"></i>
+                                <span>Big Action (+10)</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="action-btn quest-btn" onclick="completeQuest('daily')">
+                                <i class="fas fa-tasks"></i>
+                                <span>Daily Quest (+25)</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="action-btn quest-btn" onclick="completeQuest('weekly')">
+                                <i class="fas fa-calendar-week"></i>
+                                <span>Weekly Quest (+100)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Progress & Recent Achievements -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="progress-card">
+                    <h3 class="text-white mb-3">
+                        <i class="fas fa-calendar-day me-2"></i>Today's Progress
+                    </h3>
+                    {% if daily %}
+                    <div class="progress-stats">
+                        <div class="progress-item">
+                            <div class="progress-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="progress-content">
+                                <div class="progress-number">{{ daily.actions_completed }}</div>
+                                <div class="progress-label">Actions Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="progress-content">
+                                <div class="progress-number">{{ daily.quests_completed }}</div>
+                                <div class="progress-label">Quests Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="progress-content">
+                                <div class="progress-number">{{ daily.streak_count }}</div>
+                                <div class="progress-label">Day Streak</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="no-progress">
+                        <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No activity today yet. Start earning XP!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="achievements-card">
+                    <h3 class="text-white mb-3">
+                        <i class="fas fa-trophy me-2"></i>Recent Achievements
+                    </h3>
+                    {% if recent_achievements %}
+                    <div class="achievements-list">
+                        {% for user_achievement in recent_achievements %}
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <div class="achievement-name">{{ user_achievement.achievement.name }}</div>
+                                <div class="achievement-description">{{ user_achievement.achievement.description }}</div>
+                                <div class="achievement-date">{{ user_achievement.unlocked_at.strftime('%B %d, %Y') }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="no-achievements">
+                        <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No achievements yet. Keep leveling up!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// XP earning functions
+function earnXP(actionType, amount) {
+    fetch('/api/earn_xp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action_type: actionType,
+            amount: amount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showXPToast(amount);
+            updateStats(data);
+            
+            if (data.level_up) {
+                showLevelUpModal(data.new_level);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function completeQuest(questType) {
+    fetch('/api/complete_quest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quest_type: questType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const amount = questType === 'daily' ? 25 : 100;
+            showXPToast(amount);
+            updateStats(data);
+            
+            if (data.level_up) {
+                showLevelUpModal(data.new_level);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function showXPToast(amount) {
+    const toast = document.getElementById('xpToast');
+    const xpAmount = document.getElementById('xpAmount');
+    xpAmount.textContent = `+${amount}`;
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+function showLevelUpModal(newLevel) {
+    const modal = document.getElementById('levelUpModal');
+    const levelSpan = document.getElementById('newLevel');
+    levelSpan.textContent = newLevel;
+    
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+}
+
+function updateStats(data) {
+    // Update XP and level in the UI
+    const xpElements = document.querySelectorAll('.stat-number');
+    if (xpElements.length > 0) {
+        xpElements[0].textContent = data.new_xp;
+    }
+    
+    const levelElements = document.querySelectorAll('.level-number');
+    levelElements.forEach(el => {
+        el.textContent = data.new_level;
+    });
+    
+    // Update progress bar
+    const progressBar = document.querySelector('.xp-progress');
+    const progressPercent = (data.progress[0] / data.progress[1]) * 100;
+    if (progressBar) {
+        progressBar.style.width = progressPercent + '%';
+    }
+    
+    // Update progress text
+    const xpText = document.querySelector('.xp-text');
+    if (xpText) {
+        xpText.innerHTML = `<span class="current-xp">${data.progress[0]}</span> / <span class="needed-xp">${data.progress[1]}</span> XP <span class="xp-percent">(${progressPercent.toFixed(1)}%)</span>`;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Whop Gamify - Level Up Your Community{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold text-white mb-4">
+                        Level Up Your Community
+                    </h1>
+                    <p class="lead text-white-50 mb-4">
+                        Transform your Whop community into an engaging, gamified experience. 
+                        Earn XP, level up, and unlock achievements as you participate!
+                    </p>
+                    <div class="hero-features mb-5">
+                        <div class="feature-item">
+                            <i class="fas fa-trophy text-warning me-3"></i>
+                            <span class="text-white">XP & Leveling System</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-medal text-warning me-3"></i>
+                            <span class="text-white">Achievements & Rewards</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-fire text-warning me-3"></i>
+                            <span class="text-white">Daily Streaks</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line text-warning me-3"></i>
+                            <span class="text-white">Progress Tracking</span>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('login') }}" class="btn btn-warning btn-lg me-3">
+                            <i class="fas fa-rocket me-2"></i>Get Started
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="level-card">
+                        <div class="level-badge">
+                            <span class="level-number">15</span>
+                        </div>
+                        <div class="xp-bar">
+                            <div class="xp-progress" style="width: 75%"></div>
+                        </div>
+                        <div class="xp-text">1,250 / 1,600 XP</div>
+                    </div>
+                    <div class="floating-elements">
+                        <div class="floating-icon" style="top: 20%; left: 10%; animation-delay: 0s;">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="floating-icon" style="top: 60%; right: 15%; animation-delay: 1s;">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="floating-icon" style="bottom: 30%; left: 20%; animation-delay: 2s;">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold text-white mb-3">Features</h2>
+                <p class="lead text-white-50">Everything you need to gamify your community</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>XP System</h4>
+                    <p>Earn experience points through various activities and level up your profile.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4>Achievements</h4>
+                    <p>Unlock special achievements and badges as you reach milestones.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h4>Daily Streaks</h4>
+                    <p>Build daily streaks and earn bonus rewards for consistent participation.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h4>Quests</h4>
+                    <p>Complete daily and weekly quests to earn extra XP and rewards.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Leaderboards</h4>
+                    <p>Compete with other community members and climb the leaderboards.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h4>Rewards</h4>
+                    <p>Redeem points for exclusive rewards and special privileges.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold text-white mb-4">Ready to Level Up?</h2>
+                <p class="lead text-white-50 mb-4">
+                    Join thousands of users who are already leveling up their community experience. 
+                    Start earning XP today and unlock your potential!
+                </p>
+                <a href="{{ url_for('login') }}" class="btn btn-warning btn-lg">
+                    <i class="fas fa-rocket me-2"></i>Start Your Journey
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">XP Earned</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">1K+</div>
+                        <div class="stat-label">Achievements</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

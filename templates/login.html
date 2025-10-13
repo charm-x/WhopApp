@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Whop Gamify{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6 col-lg-4">
+                <div class="login-card">
+                    <div class="login-header text-center mb-4">
+                        <div class="login-logo">
+                            <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                        </div>
+                        <h2 class="text-white fw-bold">Welcome Back!</h2>
+                        <p class="text-white-50">Sign in to continue your journey</p>
+                    </div>
+                    
+                    <div class="login-form">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="username" class="form-label text-white">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label text-white">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-warning btn-lg w-100 mb-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In / Sign Up
+                            </button>
+                        </form>
+                        
+                        <div class="login-divider">
+                            <span class="text-white-50">or</span>
+                        </div>
+                        
+                        <div class="demo-login">
+                            <button type="button" class="btn btn-outline-light w-100" onclick="demoLogin()">
+                                <i class="fas fa-play me-2"></i>Try Demo
+                            </button>
+                            <small class="text-white-50 d-block text-center mt-2">
+                                Experience the app with a demo account
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="login-footer text-center mt-4">
+                        <p class="text-white-50 small">
+                            By signing in, you agree to our terms of service and privacy policy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    
+    // In a real app, this would integrate with Whop's OAuth
+    // For demo purposes, we'll create a simple login
+    loginUser(username, email);
+});
+
+function loginUser(username, email) {
+    // Simulate login process
+    const loadingBtn = document.querySelector('button[type="submit"]');
+    const originalText = loadingBtn.innerHTML;
+    loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing in...';
+    loadingBtn.disabled = true;
+    
+    // Call the demo login API
+    fetch('/demo_login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: username,
+            email: email
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            loadingBtn.innerHTML = originalText;
+            loadingBtn.disabled = false;
+            alert('Login failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        loadingBtn.innerHTML = originalText;
+        loadingBtn.disabled = false;
+        alert('Login failed. Please try again.');
+    });
+}
+
+function demoLogin() {
+    fetch('/demo_login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: 'DemoUser',
+            email: 'demo@example.com'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            alert('Demo login failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Demo login failed. Please try again.');
+    });
+}
+</script>
+{% endblock %}

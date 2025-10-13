@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Whop Gamify{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container py-4">
+        <!-- Profile Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="profile-header-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <div class="profile-avatar">
+                                <div class="avatar-circle">
+                                    <i class="fas fa-user fa-3x"></i>
+                                </div>
+                                <div class="level-badge-profile">
+                                    <span class="level-number">{{ user.level }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-info">
+                                <h1 class="display-6 fw-bold text-white mb-2">{{ user.username }}</h1>
+                                <p class="text-white-50 mb-3">Member since {{ user.created_at.strftime('%B %Y') }}</p>
+                                
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number">{{ user.xp }}</div>
+                                        <div class="stat-label">Total XP</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">{{ user.points }}</div>
+                                        <div class="stat-label">Points</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">{{ user.streak_count }}</div>
+                                        <div class="stat-label">Day Streak</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="profile-actions">
+                                <button class="btn btn-warning btn-lg mb-2" onclick="earnXP('action', 5)">
+                                    <i class="fas fa-plus-circle me-2"></i>Earn XP
+                                </button>
+                                <div class="text-center">
+                                    <small class="text-white-50">Last active: {{ user.last_activity.strftime('%m/%d/%Y') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Progress -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="level-progress-card">
+                    <h3 class="text-white mb-3">Level Progress</h3>
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="xp-bar-container">
+                                <div class="xp-bar">
+                                    <div class="xp-progress" style="width: {{ (user.xp % 100) }}%"></div>
+                                </div>
+                                <div class="xp-text">
+                                    <span class="current-xp">{{ user.xp % 100 }}</span> / <span class="needed-xp">100</span> XP to next level
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="next-level-info">
+                                <div class="next-level-number">{{ user.level + 1 }}</div>
+                                <div class="next-level-label">Next Level</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="achievements-section-card">
+                    <h3 class="text-white mb-4">
+                        <i class="fas fa-trophy me-2"></i>Achievements
+                    </h3>
+                    
+                    <div class="achievements-grid">
+                        {% for achievement_status in achievement_status %}
+                        <div class="achievement-card {% if achievement_status.unlocked %}unlocked{% else %}locked{% endif %}">
+                            <div class="achievement-icon">
+                                {% if achievement_status.unlocked %}
+                                    <i class="fas fa-medal text-warning"></i>
+                                {% else %}
+                                    <i class="fas fa-lock text-muted"></i>
+                                {% endif %}
+                            </div>
+                            <div class="achievement-content">
+                                <h5 class="achievement-name">{{ achievement_status.achievement.name }}</h5>
+                                <p class="achievement-description">{{ achievement_status.achievement.description }}</p>
+                                {% if achievement_status.unlocked %}
+                                    <div class="achievement-rewards">
+                                        {% if achievement_status.achievement.xp_reward > 0 %}
+                                            <span class="reward-badge xp-reward">
+                                                <i class="fas fa-star me-1"></i>+{{ achievement_status.achievement.xp_reward }} XP
+                                            </span>
+                                        {% endif %}
+                                        {% if achievement_status.achievement.points_reward > 0 %}
+                                            <span class="reward-badge points-reward">
+                                                <i class="fas fa-coins me-1"></i>+{{ achievement_status.achievement.points_reward }} Points
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="achievement-date">
+                                        Unlocked {{ achievement_status.unlocked_at.strftime('%B %d, %Y') }}
+                                    </div>
+                                {% else %}
+                                    <div class="achievement-requirement">
+                                        <i class="fas fa-target me-1"></i>
+                                        {% if achievement_status.achievement.requirement_type == 'level' %}
+                                            Reach level {{ achievement_status.achievement.requirement_value }}
+                                        {% elif achievement_status.achievement.requirement_type == 'xp' %}
+                                            Earn {{ achievement_status.achievement.requirement_value }} XP
+                                        {% elif achievement_status.achievement.requirement_type == 'streak' %}
+                                            {{ achievement_status.achievement.requirement_value }}-day streak
+                                        {% else %}
+                                            Complete requirement
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function earnXP(actionType, amount) {
+    fetch('/api/earn_xp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action_type: actionType,
+            amount: amount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showXPToast(amount);
+            updateStats(data);
+            
+            if (data.level_up) {
+                showLevelUpModal(data.new_level);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function showXPToast(amount) {
+    const toast = document.getElementById('xpToast');
+    const xpAmount = document.getElementById('xpAmount');
+    xpAmount.textContent = `+${amount}`;
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+function showLevelUpModal(newLevel) {
+    const modal = document.getElementById('levelUpModal');
+    const levelSpan = document.getElementById('newLevel');
+    levelSpan.textContent = newLevel;
+    
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+}
+
+function updateStats(data) {
+    // Update XP and level in the UI
+    const xpElements = document.querySelectorAll('.stat-number');
+    if (xpElements.length > 0) {
+        xpElements[0].textContent = data.new_xp;
+    }
+    
+    const levelElements = document.querySelectorAll('.level-number');
+    levelElements.forEach(el => {
+        el.textContent = data.new_level;
+    });
+    
+    // Reload page to show updated achievements
+    setTimeout(() => {
+        location.reload();
+    }, 2000);
+}
+</script>
+{% endblock %}
